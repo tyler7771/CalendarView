@@ -1,26 +1,39 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import ApiCalendar from "react-google-calendar-api";
+import React from "react";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+export default class DoubleButton extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleItemClick = this.handleItemClick.bind(this);
+  }
+
+  handleItemClick(_, name) {
+    if (name === "sign-in") {
+      ApiCalendar.handleAuthClick();
+    } else if (name === "sign-out") {
+      ApiCalendar.handleSignoutClick();
+    }
+  }
+
+  listEvents() {
+    if (ApiCalendar.sign) {
+      ApiCalendar.listUpcomingEvents(10).then(({ result }) => {
+        console.log(result.items);
+      });
+    }
+  }
+
+  render() {
+    return (
+      <>
+        <button onClick={(e) => this.handleItemClick(e, "sign-in")}>
+          sign-in
+        </button>
+        <button onClick={(e) => this.handleItemClick(e, "sign-out")}>
+          sign-out
+        </button>
+        <button onClick={this.listEvents}>log</button>
+      </>
+    );
+  }
 }
-
-export default App;
